@@ -1,32 +1,36 @@
 package com.philexliveprojects.imagecapture
 
-import android.content.Context
+import android.Manifest
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivityResultRegistryOwner
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.content.ContextCompat
 import com.philexliveprojects.imagecapture.databinding.PreviewViewBinding
 import com.philexliveprojects.imagecapture.ui.theme.ImageCaptureTheme
 
-class MainActivity : ComponentActivity() {
+val PERMISSIONS_GRANTED = mutableListOf(
+    Manifest.permission.CAMERA,
+    Manifest.permission.RECORD_AUDIO
+)
 
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -36,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting()
+                    ImageCaptureApp()
                 }
             }
         }
@@ -44,7 +48,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(modifier: Modifier = Modifier) {
+fun ImageCaptureApp(modifier: Modifier = Modifier) {
+    CameraPreview(modifier)
+}
+
+@Composable
+fun CameraPreview(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize()) {
 
         val context = LocalContext.current
@@ -75,19 +84,13 @@ fun Greeting(modifier: Modifier = Modifier) {
                 }
             }, ContextCompat.getMainExecutor(context))
         }
-
-
     }
-}
-
-private fun startCamera(context: Context) {
-
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ImageCaptureTheme {
-        Greeting()
+        ImageCaptureApp()
     }
 }
